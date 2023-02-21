@@ -62,7 +62,7 @@ def main():
 
     # Wait for a bit to give the DMX controller time to process the data
     f = open("log.txt", "a")
-    a = print("Universe 1: [", universe1_data,"] | Universe 2: [",universe2_data,"]")
+    a = print("Universe 1: [", universe1,"] | Universe 2: [",universe2,"]")
     f.write(a + "\n")
     print ("\033[A                             \033[A")
 
