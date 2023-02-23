@@ -1,14 +1,18 @@
 ## Universe Merge Script (Contact Ben Moore [contact@theoasis.tech] for issues)
 
-#import argparse
+import argparse
 import time
 import os
 import platform
-#import socket
-#import serial
-#from pyartnet import ArtNetNode
-#import pyenttec
+import socket
+import serial
+from pyartnet import ArtNetNode
+import pyenttec
 
+def currentRunning():
+    up = "Offline"
+    return up
+    pass
 
 def get_os():
 
@@ -25,13 +29,14 @@ def get_os():
     return used_os
 
 def splash():
-
+    currentRunning()
     os_type = get_os()
     if os_type:
         os.system(os_type)
 
     print("""
     \033[1;35m
+    Status: {0}
       _    _       _                           __  __
      | |  | |     (_)                         |  \/  |
      | |  | |_ __  ___   _____ _ __ ___  ___  | \  / | ___ _ __ __ _  ___
@@ -39,15 +44,17 @@ def splash():
      | |__| | | | | |\ V /  __/ |  \__ \  __/ | |  | |  __/ | | (_| |  __/
       \____/|_| |_|_| \_/ \___|_|  |___/\___| |_|  |_|\___|_|  \__, |\___|
                                                                 __/ |
-        Emerge Church                                          |___/
+                                                               |___/
+        Emerge Church
 
+    \033[1;31m[1]\033[0m \033[1;32mStart\033[0m
     \033[1;31m[1]\033[0m \033[1;32mAdd Blacklist\033[0m
     \033[1;31m[2]\033[0m \033[1;32mRemove Blacklist\033[0m
     \033[1;31m[3]\033[0m \033[1;32mCheck Blacklist Status\033[0m
     \033[1;31m[4]\033[0m \033[1;32mRestart\033[0m
     \033[1;31m[5]\033[0m \033[1;32mDatastream\033[0m
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
-    """)
+    """).format(up)
     # Define the menu options
 
     mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m\033[1;32mroot\033[0m > ")
