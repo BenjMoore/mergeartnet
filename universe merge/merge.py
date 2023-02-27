@@ -9,6 +9,8 @@ import pyartnet
 
 global blacklist
 blacklist = []
+global IP1
+global IP2
 
 def currentRunning():
     up = "Offline"
@@ -53,6 +55,7 @@ def splash():
     \033[1;31m[4]\033[0m \033[1;32mCheck Blacklist Status\033[0m
     \033[1;31m[5]\033[0m \033[1;32mDatastream\033[0m
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
+    \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
     """)
     print("\033[1;31mStatus: "+ up + "\033[0m")
     # Define the menu options
@@ -73,9 +76,14 @@ def splash():
         splash()
 
     if mainSelection == '4':
-        print("Blacklist: ", data)
-        time.sleep(1)
-        splash()
+        if len(blacklist) == 0:
+            print("Blacklist Empty!")
+            time.sleep(1)
+            splash()
+        else:
+            print("Blacklist: ", blacklist)
+            time.sleep(3)
+            splash()
         
     if mainSelection == '5':
         pass
@@ -118,7 +126,7 @@ def disable_blacklist():
 def main():
 
     # Set up Art-Net parameters
-    ip_addresses = ["192.168.1.184", "192.168.1.148"]  # IP addresses of the Art-Net nodes
+    ip_addresses = [IP1, IP2]  # IP addresses of the Art-Net nodes
     port = 6454  # Art-Net port
     universe_size = 512  # Number of channels in a single Art-Net universe
     num_universes = 2  # Number of universes to merge
@@ -165,4 +173,4 @@ if __name__ == '__main__':
 
 
 
-## Spencer and Ben XOXO
+## Spencer and Ben XOXO ##
