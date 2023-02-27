@@ -1,88 +1,168 @@
-import socket
-import serial
+## Universe Merge Script (Contact Ben Moore [contact@theoasis.tech] for issues)
 
+import time
+import os
+import platform
+import socket
+import struct
+import pyartnet
+
+global blacklist
+blacklist = []
+
+def currentRunning():
+    up = "Offline"
+    return up
+    pass
+
+def get_os():
+
+    operating_system = platform.system()
+    if operating_system == 'Linux':
+        used_os = 'clear'
+    elif operating_system == 'Windows':
+        used_os = 'cls'
+    elif operating_system == 'Darwin':
+        used_os = 'clear'
+    else:
+        print('OS not defined!')
+        used_os = None
+    return used_os
 
 def splash():
-    print("""
-    
-  _    _       _                           __  __                     
- | |  | |     (_)                         |  \/  |                    
- | |  | |_ __  ___   _____ _ __ ___  ___  | \  / | ___ _ __ __ _  ___ 
- | |  | | '_ \| \ \ / / _ \ '__/ __|/ _ \ | |\/| |/ _ \ '__/ _` |/ _ \
- | |__| | | | | |\ V /  __/ |  \__ \  __/ | |  | |  __/ | | (_| |  __/
-  \____/|_| |_|_| \_/ \___|_|  |___/\___| |_|  |_|\___|_|  \__, |\___|
-                                                            __/ |     
-    Emerge Church                                          |___/      
-    
-    """)
-import argparse
-import time
+    up = currentRunning()
+    os_type = get_os()
+    if os_type:
+        os.system(os_type)
 
-from pyartnet.artnet import ArtNet
-from pyenttec.DMXUSBPro import DMXUSBPro
+    print("""
+    \033[1;35m
+      _    _       _                           __  __
+     | |  | |     (_)                         |  \/  |
+     | |  | |_ __  ___   _____ _ __ ___  ___  | \  / | ___ _ __ __ _  ___
+     | |  | | '_ \| \ \ / / _ \ '__/ __|/ _ \ | |\/| |/ _ \ '__/ _` |/ _ \\
+     | |__| | | | | |\ V /  __/ |  \__ \  __/ | |  | |  __/ | | (_| |  __/
+      \____/|_| |_|_| \_/ \___|_|  |___/\___| |_|  |_|\___|_|  \__, |\___|
+                                                                __/ |
+                                                               |___/
+        Emerge Church
+
+    \033[1;31m[1]\033[0m \033[1;32mStart\033[0m
+    \033[1;31m[2]\033[0m \033[1;32mAdd Blacklist\033[0m
+    \033[1;31m[3]\033[0m \033[1;32mRemove Blacklist\033[0m
+    \033[1;31m[4]\033[0m \033[1;32mCheck Blacklist Status\033[0m
+    \033[1;31m[5]\033[0m \033[1;32mDatastream\033[0m
+    \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
+    """)
+    print("\033[1;31mStatus: "+ up + "\033[0m")
+    # Define the menu options
+
+    mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m\033[1;32mroot\033[0m > ")
+
+    if mainSelection == '1':
+        main()
+        
+    if mainSelection == '2':
+        blacklistChannels()
+
+    if mainSelection == '3':
+
+        blacklistEnable = disable_blacklist()
+        print("Blacklist:", blacklistEnable)
+        time.sleep(1)
+        splash()
+
+    if mainSelection == '4':
+        print("Blacklist: ", data)
+        time.sleep(1)
+        splash()
+        
+    if mainSelection == '5':
+        pass
+    if mainSelection == '0':
+        pass
+
+    else:
+        print("Invalid Input...")
+        time.sleep(1)
+        print("Restarting...")
+        time.sleep(1)
+        splash()
+
+def blacklistChannels():
+    import csv
+    blackListInfo = input("Blacklist channels? [Y/N]: ")
+    if blackListInfo == "Y" or "y":
+        channelsToBlacklist()
+
+    if blackListInfo == "N" or "n":
+        splash()
+        pass
+
+def channelsToBlacklist():
+    import csv
+    filename = input('Enter the CSV file name: ')
+
+    with open(filename, newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        blacklist = [row for row in csvreader]
+
+    return blacklist
+    
+
+def disable_blacklist():
+    blacklist = []
+
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Merge two Art-Net universes and output them to an ENTTEC DMX USB Pro')
-    parser.add_argument('ip1', type=str, help='IP address of the first Art-Net universe')
-    parser.add_argument('ip2', type=str, help='IP address of the second Art-Net universe')
-    parser.add_argument('blacklist', nargs='*', type=int, help='List of channels to blacklist')
-    parser.add_argument('--output-ip', type=str, help='IP address of the output Art-Net universe', default=None)
-    parser.add_argument('--output-port', type=int, help='Port of the output Art-Net universe', default=0x1936)
-    parser.add_argument('--usb-pro', type=str, help='Serial port of the ENTTEC DMX USB Pro', default=None)
-    parser.add_argument('--baud-rate', type=int, help='Baud rate of the ENTTEC DMX USB Pro', default=57600)
-    args = parser.parse_args()
 
-    # Set up the Art-Net universes
-    universe1 = ArtNet(args.ip1, universe=0)
-    universe2 = ArtNet(args.ip2, universe=0)
+    # Set up Art-Net parameters
+    ip_addresses = ["192.168.1.184", "192.168.1.148"]  # IP addresses of the Art-Net nodes
+    port = 6454  # Art-Net port
+    universe_size = 512  # Number of channels in a single Art-Net universe
+    num_universes = 2  # Number of universes to merge
+    blacklist_channels = []  # List of channels to exclude from the merged data
 
-    # Set up the output Art-Net universe
-    if args.output_ip is not None:
-        output_universe = ArtNet(args.output_ip, universe=0, bind_ip=args.output_ip)
-    else:
-        output_universe = None
+    # Set up Art-Net sender to send merged data
+    destination_ip = "192.168.1.202"
+    sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    # Set up the ENTTEC DMX USB Pro
-    if args.usb_pro is not None:
-        dmx = DMXUSBPro(port=args.usb_pro, baudrate=args.baud_rate)
-    else:
-        dmx = None
+    # Create a buffer to hold the merged universe data
+    merged_data = bytearray(universe_size * num_universes)
 
-    # Merge the universes
-    merged_universe = merge_universes(universe1.get(), universe2.get(), args.blacklist)
+    # Loop through the universes to merge
+    for universe in range(num_universes):
+        # Connect to the Art-Net node for this universe
+        address = (ip_addresses[universe], port)
+        receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        receiver_socket.bind(address)
 
-    # Output the merged universe
-    if output_universe is not None:
-        output_universe.set(merged_universe)
+        # Receive the universe data from the Art-Net node
+        data = receiver_socket.recv(universe_size)
 
-    # Output the merged universe to the ENTTEC DMX USB Pro
-    if dmx is not None:
-        dmx.setChannelRange(1, merged_universe)
+        # Merge the universe data into the merged_data buffer
+        start_index = universe * universe_size
+        for i in range(universe_size):
+            if i not in blacklist_channels:
+                merged_data[start_index + i] = data[i]
 
-    # Wait for a bit to give the DMX controller time to process the data
-    f = open("log.txt", "a")
-    a = print("Universe 1: [", universe1,"] | Universe 2: [",universe2,"]")
-    f.write(a + "\n")
-    print ("\033[A                             \033[A")
+        # Close the connection to the Art-Net node
+        receiver_socket.close()
 
-    time.sleep(0.1)
-   
+    # Send the merged universe data via Art-Net
+    packet_size = 18 + len(merged_data)
+    packet_data = struct.pack('!8sBHHH', b'Art-Net\x00', 0x00, packet_size, 0x00, 0x50) + merged_data
+    sender_socket.sendto(packet_data, (destination_ip, port))
 
+    # Close the socket
+    sender_socket.close()
 
-
-def merge_universes(universe1, universe2, blacklist):
-    merged_universe = list(universe1)
-    for i, channel in enumerate(universe2):
-        if i in blacklist:
-            continue
-        if channel is not None:
-            merged_universe[i] = channel
-    return merged_universe
 
 
 if __name__ == '__main__':
-    main()
+    splash()
+
 
 
 ## Spencer and Ben XOXO
