@@ -8,9 +8,13 @@ import struct
 import pyartnet
 
 global blacklist
-blacklist = []
 global IP1
 global IP2
+global DestIP
+IP1 = "192.168.0.0"
+IP2 = "192.168.0.1"
+blacklist = []
+
 
 def currentRunning():
     up = "Offline"
@@ -88,12 +92,19 @@ def splash():
     if mainSelection == '5':
         pass
     if mainSelection == '0':
-        pass
-
+        print("Universe 1 IP: ",IP1)
+        print("Universe 2 IP: ", IP2)
+        print("Destination IP: ", DestIP)
+        print("Blacklist: ", blacklist)
+        input("Press Enter To Continue....")
+        splash()
+        
     if mainSelection == 'IP':
         IP1 = input("Universe 1: ")
         IP2 = input("Universe 2: ")
-        pass
+        DestIP = input("Destination IP: ")
+        splash()
+       
 
     else:
         print("Invalid Input...")
@@ -138,7 +149,7 @@ def main():
     blacklist_channels = []  # List of channels to exclude from the merged data
 
     # Set up Art-Net sender to send merged data
-    destination_ip = "192.168.1.202"
+    destination_ip = DestIP
     sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     # Create a buffer to hold the merged universe data
