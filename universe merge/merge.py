@@ -55,7 +55,7 @@ def splash():
     \033[1;31m[4]\033[0m \033[1;32mCheck Blacklist Status\033[0m
     \033[1;31m[5]\033[0m \033[1;32mDatastream\033[0m
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
-    \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
+    \033[1;31m[IP]\033[0m \033[1;32mAssign IP\033[0m
     """)
     print("\033[1;31mStatus: "+ up + "\033[0m")
     # Define the menu options
@@ -88,6 +88,11 @@ def splash():
     if mainSelection == '5':
         pass
     if mainSelection == '0':
+        pass
+
+    if mainSelection == 'IP':
+        IP1 = input("Universe 1: ")
+        IP2 = input("Universe 2: ")
         pass
 
     else:
