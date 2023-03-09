@@ -4,9 +4,9 @@
 import time
 import os
 import platform
-from badArtnet import StupidArtnetServer
+from stupidArtnet import StupidArtnetServer
 from ArtnetUtils import shift_this, put_in_range
-from badArtnet import StupidArtnet
+from stupidArtnet import StupidArtnet
 import random
 import sacn
 
@@ -16,6 +16,7 @@ global port
 port = ""
 global dmxData
 dmxData = []
+global version
 
 # Define & initiate sACN (E1.31) receiver
 receiver = sacn.sACNreceiver()
@@ -279,5 +280,6 @@ def reciveVISTA():
 
 if __name__ == main():
 
-## Spencer and Ben XOXO ##
     pass
+
+## Spencer and Ben XOXO ##
