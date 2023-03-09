@@ -5,7 +5,7 @@ import time
 import os
 import platform
 from badArtnet import StupidArtnetServer
-from badArtnet.ArtnetUtils import shift_this, put_in_range
+from ArtnetUtils import shift_this, put_in_range
 from badArtnet import StupidArtnet
 import random
 import sacn
@@ -280,5 +280,4 @@ def reciveVISTA():
 if __name__ == main():
 
 ## Spencer and Ben XOXO ##
-
-
+    pass
