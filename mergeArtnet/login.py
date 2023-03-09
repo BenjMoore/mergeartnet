@@ -1,7 +1,8 @@
 #### MERGEARTNET LOGIN ####
 
 ## Simple login script to ensure authorised acsess ##
-execfile("~/mergeArtnet/merge.py")
+import globalvar
 
-print("Mergeartnet V",version)
+
+print("Mergeartnet V",globalvar())
 user = input("User")

@@ -18,6 +18,10 @@ global dmxData
 dmxData = []
 global version
 
+def globalvar():
+    version = 1.0
+    return version
+    
 # Define & initiate sACN (E1.31) receiver
 receiver = sacn.sACNreceiver()
 receiver.start()  # start the receiving thread
