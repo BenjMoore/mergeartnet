@@ -10,6 +10,8 @@ from stupidArtnet import StupidArtnet
 import random
 import sacn
 
+print("Init sACN")
+
 global blacklist
 blacklist = []
 global port
@@ -18,17 +20,25 @@ global dmxData
 dmxData = []
 global version
 
+def main():
+    get_os()
+    splash()
+    login.globalvar()
+    login.login()
+    
+
+
 def globalvar():
     version = 1.0
     return version
-    
-# Define & initiate sACN (E1.31) receiver
-receiver = sacn.sACNreceiver()
-receiver.start()  # start the receiving thread
 
+def initiatesCAN():   
+    # Define & initiate sACN (E1.31) receiver
+    receiver = sacn.sACNreceiver()
+    receiver.start()  # start the receiving thread
 
 def currentRunning():
-    up = "Offline"
+    up = "Online"
     return up
     pass
 
@@ -72,11 +82,14 @@ def splash():
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
     \033[1;31m[BUS]\033[0m \033[1;32mAssign Bus (Set to NONE to ignore Serial output)\033[0m
     """)
-    print("\033[1;31mStatus: "+ up + "\033[0m")
+    if up == "Online":
+        print("\u001b[32mStatus: "+ up +"\033[0m")
+    else:
+        print("\033[1;31mStatus: "+ up + "\033[0m")
+    
     # Define the menu options
-
-    mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m\033[1;32mroot\033[0m > ")
-
+    mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m""\033[1;32m\033[0m > ")
+    
     if mainSelection == '1':
         main()
         
@@ -115,6 +128,8 @@ def splash():
         print("Restarting...")
         time.sleep(1)
         splash()
+
+    print("Init Serial")
 
     #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
     if operating_system == "Darwin":
@@ -162,9 +177,8 @@ def disable_blacklist():
     blacklist = []
 
 def sendSerial():
-    port.dmx_frame[1,2,3] # Ben will add array soon
+    port.dmx_frame[packet] # Ben will add array soon
     port.render()
-
 
 def sendArtNet():
     target_ip = '192.168.1.58'		# typically in 2.x or 10.x range
@@ -187,6 +201,7 @@ def sendArtNet():
     # CHECK INIT
     print(a)
 
+    global packet
     packet = bytearray(packet_size)		# create packet for Artnet
     for i in range(packet_size):			# fill packet with sequential values
         packet[i] = (i % 256)
@@ -252,10 +267,10 @@ def reciveresolume():
     buffer = a.get_buffer(u1_listener)
     print(buffer)
     # Cleanup when you are done
-   
-#############
-#Recive VISTA through sACN
+
 def reciveVISTA():
+    #############
+    #Recive VISTA through sACN
     # provide an IP-Address to bind to if you want to send multicast packets from a specific interface
     # define a callback function
     @receiver.listen_on('universe', universe=0)  # listens on universe 1
@@ -276,14 +291,6 @@ def reciveVISTA():
     receiver.stop()
             
 
-
-#reciveresolume()
-
-
-##send()
-
-if __name__ == main():
-
-    pass
+main()
 
 ## Spencer and Ben XOXO ##
