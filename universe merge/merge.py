@@ -6,6 +6,7 @@ import platform
 import socket
 import struct
 import pyartnet
+import pyenttec as dmx
 
 global blacklist
 global IP1
@@ -147,6 +148,7 @@ def main():
     universe_size = 512  # Number of channels in a single Art-Net universe
     num_universes = 2  # Number of universes to merge
     blacklist_channels = []  # List of channels to exclude from the merged data
+    # port = dmx.select_port() # Set port to use
 
     # Set up Art-Net sender to send merged data
     destination_ip = DestIP
@@ -171,6 +173,10 @@ def main():
             if i not in blacklist_channels:
                 merged_data[start_index + i] = data[i]
 
+        # Set up pyenttec to send over Serial
+        # port.dmx_frame[]
+        # port.render()
+        
         # Close the connection to the Art-Net node
         receiver_socket.close()
 
