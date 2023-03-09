@@ -149,6 +149,7 @@ def main():
     num_universes = 2  # Number of universes to merge
     blacklist_channels = []  # List of channels to exclude from the merged data
     # port = dmx.select_port() # Set port to use
+    port.available_ports()
 
     # Set up Art-Net sender to send merged data
     destination_ip = DestIP
