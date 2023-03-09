@@ -59,6 +59,7 @@ def splash():
     \033[1;31m[4]\033[0m \033[1;32mCheck Blacklist Status\033[0m
     \033[1;31m[5]\033[0m \033[1;32mDatastream\033[0m
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
+    \033[1;31m[BUS]\033[0m \033[1;32mAssign Bus (Set to NONE to ignore Serial output)\033[0m
     """)
     print("\033[1;31mStatus: "+ up + "\033[0m")
     # Define the menu options
@@ -88,12 +89,37 @@ def splash():
     if mainSelection == '0':
         pass
 
+    if mainSelection == 'BUS':
+        serial_bus = input("Serial Bus to use (Set to NONE to not use Serial): ")
+        lower(serial_bus)
+        splash()
+       
     else:
         print("Invalid Input...")
         time.sleep(1)
         print("Restarting...")
         time.sleep(1)
         splash()
+
+    #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
+    if operating_system == "Darwin":
+        print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
+        port = dmx.select_port() # Set port to use
+    elif operating_system == "Linux":
+        if serial_bus = "" do:
+            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \ndmesg | grep tty. Set the setting to whatever it prints, e.g: ttyUSB0\u001b[0m")
+        else:
+            port = dmx.select_port("/dev/" + serial_bus)
+    elif operating_system == "Windows":
+        if serial_bus = "" do:
+            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
+        else:
+            port = dmx.select_port(serial_bus)
+    elif serial_bus = lower("none") #print(port.lower())
+        continue()
+    else:
+        print("Unknown Error! (Serial)")
+        exit()
 
 def blacklistChannels():
     import csv

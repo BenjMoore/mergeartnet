@@ -1,20 +1,25 @@
 ## Universe Merge Script (Contact Ben Moore [contact@theoasis.tech] for issues)
-
+## TEST CASES ###
+## TEST WITH NDI RUNNING ##
 import time
 import os
 import platform
-import socket
-import struct
-import pyartnet
-import pyenttec as dmx
+from badArtnet import StupidArtnetServer
+from badArtnet.ArtnetUtils import shift_this, put_in_range
+from badArtnet import StupidArtnet
+import random
+import sacn
 
 global blacklist
-global IP1
-global IP2
-global DestIP
-IP1 = "192.168.0.0"
-IP2 = "192.168.0.1"
 blacklist = []
+global port
+port = ""
+global dmxData
+dmxData = []
+
+# Define & initiate sACN (E1.31) receiver
+receiver = sacn.sACNreceiver()
+receiver.start()  # start the receiving thread
 
 
 def currentRunning():
@@ -60,7 +65,7 @@ def splash():
     \033[1;31m[4]\033[0m \033[1;32mCheck Blacklist Status\033[0m
     \033[1;31m[5]\033[0m \033[1;32mDatastream\033[0m
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
-    \033[1;31m[IP]\033[0m \033[1;32mAssign IP\033[0m
+    \033[1;31m[BUS]\033[0m \033[1;32mAssign Bus (Set to NONE to ignore Serial output)\033[0m
     """)
     print("\033[1;31mStatus: "+ up + "\033[0m")
     # Define the menu options
@@ -81,38 +86,52 @@ def splash():
         splash()
 
     if mainSelection == '4':
-        if len(blacklist) == 0:
-            print("Blacklist Empty!")
-            time.sleep(1)
-            splash()
-        else:
-            print("Blacklist: ", blacklist)
-            time.sleep(3)
-            splash()
+        print("Blacklist: ", data)
+        time.sleep(1)
+        splash()
         
     if mainSelection == '5':
         pass
     if mainSelection == '0':
-        print("Universe 1 IP: ",IP1)
-        print("Universe 2 IP: ", IP2)
-        print("Destination IP: ", DestIP)
-        print("Blacklist: ", blacklist)
-        input("Press Enter To Continue....")
-        splash()
-        
-    if mainSelection == 'IP':
-        IP1 = input("Universe 1: ")
-        IP2 = input("Universe 2: ")
-        DestIP = input("Destination IP: ")
-        splash()
-       
+        pass
 
+    if mainSelection == 'BUS':
+        serial_bus = input("Serial Bus to use (Set to NONE to not use Serial): ")
+        if serial_bus == "":
+            serial_bus == "ttyUSB0"
+        if serial_bus == lower(serial_bus):
+            if serialNone == lower(serial_bus):
+                return
+
+       
     else:
         print("Invalid Input...")
         time.sleep(1)
         print("Restarting...")
         time.sleep(1)
         splash()
+
+    #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
+    if operating_system == "Darwin":
+        print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
+        port == dmx.select_port() # Set port to use
+    elif operating_system == "Linux":
+        if serial_bus == "":
+            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \ndmesg | grep tty. Set the setting to whatever it prints, e.g: ttyUSB0\u001b[0m")
+        else:
+            port == dmx.select_port("/dev/" + serial_bus)
+    elif operating_system == "Windows":
+        if serial_bus == "":
+            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
+        else:
+            port == dmx.select_port(serial_bus)
+    elif serial_bus == "NONE": 
+    #print(port.lower())
+        pass
+    
+    else:
+        print("Unknown Error! (Serial)")
+        exit()
 
 def blacklistChannels():
     import csv
@@ -134,67 +153,132 @@ def channelsToBlacklist():
 
     return blacklist
     
-
 def disable_blacklist():
     blacklist = []
 
+def sendSerial():
+    port.dmx_frame[1,2,3] # Ben will add array soon
+    port.render()
 
 
-def main():
+def sendArtNet():
+    target_ip = '192.168.1.58'		# typically in 2.x or 10.x range
+    universe = 0										# see docs
+    packet_size = 512								# it is not necessary to send whole universe
 
-    # Set up Art-Net parameters
-    ip_addresses = [IP1, IP2]  # IP addresses of the Art-Net nodes
-    port = 6454  # Art-Net port
-    universe_size = 512  # Number of channels in a single Art-Net universe
-    num_universes = 2  # Number of universes to merge
-    blacklist_channels = []  # List of channels to exclude from the merged data
-    # port = dmx.select_port() # Set port to use
-    ports = dmx.available_ports()
-    print(ports)
+  
+    
+    # TARGET_IP   = DEFAULT 127.0.0.1
+    # UNIVERSE    = DEFAULT 0
+    # PACKET_SIZE = DEFAULT 512
+    # FRAME_RATE  = DEFAULT 30
+    # ISBROADCAST = DEFAULT FALSE
+    a = StupidArtnet(target_ip, universe, packet_size, 30, True, True)
 
-    # Set up Art-Net sender to send merged data
-    destination_ip = DestIP
-    sender_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # MORE ADVANCED CAN BE SET WITH SETTERS IF NEEDED
+    # NET         = DEFAULT 0
+    # SUBNET      = DEFAULT 0
 
-    # Create a buffer to hold the merged universe data
-    merged_data = bytearray(universe_size * num_universes)
+    # CHECK INIT
+    print(a)
 
-    # Loop through the universes to merge
-    for universe in range(num_universes):
-        # Connect to the Art-Net node for this universe
-        address = (ip_addresses[universe], port)
-        receiver_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        receiver_socket.bind(address)
+    packet = bytearray(packet_size)		# create packet for Artnet
+    for i in range(packet_size):			# fill packet with sequential values
+        packet[i] = (i % 256)
 
-        # Receive the universe data from the Art-Net node
-        data = receiver_socket.recv(universe_size)
+    a.set(packet)						# only on changes
 
-        # Merge the universe data into the merged_data buffer
-        start_index = universe * universe_size
-        for i in range(universe_size):
-            if i not in blacklist_channels:
-                merged_data[start_index + i] = data[i]
+    a.set_single_value(1, 255)			# set channel 1 to 255
 
-        # Set up pyenttec to send over Serial
-        # port.dmx_frame[]
-        # port.render()
+    a.show()							# send data
+
+    a.flash_all()						# send single packet with all channels at 255
+
+    time.sleep(1)						# wait a bit, 1 sec
+
+    a.blackout()						# send single packet with all channels at 0
+    a.see_buffer()
+
+    # ALL THE ABOVE EXAMPLES SEND A SINGLE DATAPACKET
+    # STUPIDARTNET IS ALSO THREADABLE
+    # TO SEND PERSISTANT SIGNAL YOU CAN START THE THREAD
+    a.start()							# start continuos sendin
+    #switch = input("Type 'STOP' to end session >> ")
+    # AND MODIFY THE DATA AS YOU GO
+
+    while True:
+        for x in range(512):
+            for i in range(packet_size):  	# Fill buffer with random stuff
+                packet[i] = random.randint(0, 255)
+            a.set(packet)
+            time.sleep(.2)
+
+    if switch == 'STOP':
+        a.blackout()
+        a.stop()
+        del a
         
-        # Close the connection to the Art-Net node
-        receiver_socket.close()
+def reciveresolume():
+    print("===================================")
+    print("Namespace run")
 
-    # Send the merged universe data via Art-Net
-    packet_size = 18 + len(merged_data)
-    packet_data = struct.pack('!8sBHHH', b'Art-Net\x00', 0x00, packet_size, 0x00, 0x50) + merged_data
-    sender_socket.sendto(packet_data, (destination_ip, port))
+    # Art-Net 4 definition specifies nets and subnets
+    # Please see README and Art-Net user guide for details
+    # Here we use the simplified default
+    UNIVERSE_TO_LISTEN = 0
 
-    # Close the socket
-    sender_socket.close()
+    # Initilize server, this starts a server in the Art-Net port
+    a = StupidArtnetServer()
+
+    # For every universe we would like to receive,
+    # add a new listener with a optional callback
+    # the return is an id for the listener
+    u1_listener = a.register_listener(
+        UNIVERSE_TO_LISTEN, callback_function='')
+
+    # print object state
+    print("Object State:")
+    print(a)
+
+    # giving it some time for the demo
+    time.sleep(3)
+
+    # use the listener address to get data without a callback
+    buffer = a.get_buffer(u1_listener)
+    print(buffer)
+    # Cleanup when you are done
+   
+#############
+#Recive VISTA through sACN
+def reciveVISTA():
+    # provide an IP-Address to bind to if you want to send multicast packets from a specific interface
+    # define a callback function
+    @receiver.listen_on('universe', universe=0)  # listens on universe 1
+    def callback(packet):  # packet type: sacn.DataPacket
+        pass
+    a = callback(packet)
+    print(packet.dmxData)  # print the received DMX data
 
 
+        # optional: if multicast is desired, join with the universe number as parameter
+    receiver.join_multicast(1)
 
-if __name__ == '__main__':
-    splash()
+    time.sleep(10)  # receive for 10 seconds
+
+        # optional: if multicast was previously joined
+    receiver.leave_multicast(1)
+
+    receiver.stop()
+            
 
 
+#reciveresolume()
+
+
+##send()
+
+if __name__ == main():
 
 ## Spencer and Ben XOXO ##
+
+
