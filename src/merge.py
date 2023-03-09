@@ -23,10 +23,6 @@ global version
 def main():
     get_os()
     splash()
-    login.globalvar()
-    login.login()
-    
-
 
 def globalvar():
     version = 1.0

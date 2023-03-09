@@ -1,9 +1,6 @@
 #### MERGEARTNET LOGIN ####
 from getpass import getpass
 import os, time
-
-userList = ["Ben","Spencer","admin"]
-passwList = ["Oasis2023$","ChangeMe","root"]
 f = 0
 ## Simple login script to ensure authorised acsess ##
 class globalvar:
