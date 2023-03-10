@@ -149,11 +149,11 @@ def splash():
     elif serial_bus == "NONE": 
     #print(port.lower())
         pass
-    
     else:
         print("Unknown Error! (Serial)")
         exit()
 
+print("Init Blacklist")
 def blacklistChannels():
     import csv
     blackListInfo = input("Blacklist channels? [Y/N]: ")
@@ -176,6 +176,8 @@ def channelsToBlacklist():
     
 def disable_blacklist():
     blacklist = []
+
+print("Init Sends")
 
 def sendSerial():
     port.dmx_frame[packet] # Ben will add array soon
@@ -239,6 +241,8 @@ def sendArtNet():
         a.stop()
         del a
         
+print("Init Receiving")
+
 def reciveresolume():
     print("===================================")
     print("Namespace run")
