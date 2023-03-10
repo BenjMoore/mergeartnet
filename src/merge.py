@@ -128,15 +128,15 @@ def splash():
     print("Init Serial")
 
     #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
-    if operating_system == "Darwin":
+    if used_os == "Darwin":
         print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
         port == dmx.select_port() # Set port to use
-    elif operating_system == "Linux":
+    elif used_os == "Linux":
         if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \ndmesg | grep tty. Set the setting to whatever it prints, e.g: ttyUSB0\u001b[0m")
         else:
             port == dmx.select_port("/dev/" + serial_bus)
-    elif operating_system == "Windows":
+    elif used_os == "Windows":
         if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
         else:
