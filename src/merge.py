@@ -113,9 +113,9 @@ def splash():
         serial_bus = input("Serial Bus to use (Set to NONE to not use Serial): ")
         if serial_bus == "":
             serial_bus == "ttyUSB0"
-        if serial_bus == lower(serial_bus):
-            if serialNone == lower(serial_bus):
-                return
+        #if serial_bus == lower(serial_bus):
+        #    if serialNone == lower(serial_bus):
+        #        return
 
        
     else:
