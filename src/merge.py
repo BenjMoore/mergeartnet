@@ -5,7 +5,6 @@ import time
 import os
 import platform
 from stupidArtnet import StupidArtnetServer
-# from ArtnetUtils import shift_this, put_in_range
 from stupidArtnet import StupidArtnet
 import random
 import sacn
@@ -215,12 +214,9 @@ def sendArtNet():
     a.blackout()						# send single packet with all channels at 0
     a.see_buffer()
 
-    # ALL THE ABOVE EXAMPLES SEND A SINGLE DATAPACKET
-    # STUPIDARTNET IS ALSO THREADABLE
     # TO SEND PERSISTANT SIGNAL YOU CAN START THE THREAD
-    a.start()							# start continuos sendin
+    a.start()							# start continuos sending
     #switch = input("Type 'STOP' to end session >> ")
-    # AND MODIFY THE DATA AS YOU GO
 
     while True:
         for x in range(512):
