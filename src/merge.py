@@ -138,12 +138,12 @@ def splash():
         if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \ndmesg | grep tty. Set the setting to whatever it prints, e.g: ttyUSB0\u001b[0m")
         else:
-            port == dmx.select_port(auto=False "/dev/" + serial_bus)
+            port == dmx.select_port("/dev/" + serial_bus, auto=False)
     elif grabOS == "Windows":
         if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
         else:
-            port == dmx.select_port(auto=False serial_bus)
+            port == dmx.select_port(serial_bus, auto=False)
     elif serial_bus == "NONE": 
     #print(port.lower())
         pass
