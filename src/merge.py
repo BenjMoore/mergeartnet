@@ -9,6 +9,7 @@ from stupidArtnet import StupidArtnetServer
 from stupidArtnet import StupidArtnet
 import random
 import sacn
+import pyenttec as dmx
 
 print("Init sACN")
 
