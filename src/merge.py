@@ -140,7 +140,8 @@ def splash():
         else:
             # port == dmx.select_port("/dev/" + serial_bus, auto=False)
             print("Break!")
-            port == dmx.DMXConnection('/dev/serial/by-id/' + serial_bus)
+            print('/dev/serial/by-id/' + serial_bus)
+            port == dmx.DMXConnection('/dev/serial/by-id/usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0')
     elif grabOS == "Windows":
         if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
