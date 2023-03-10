@@ -8,6 +8,7 @@ from stupidArtnet import StupidArtnetServer
 from stupidArtnet import StupidArtnet
 import random
 import sacn
+import pyenttec as dmx
 
 print("Init sACN")
 
@@ -18,6 +19,8 @@ port = ""
 global dmxData
 dmxData = []
 global version
+global grabOS # get_os does not work so manually speccing
+grabOS = platform.system()
 
 def main():
     get_os()
@@ -112,9 +115,9 @@ def splash():
         serial_bus = input("Serial Bus to use (Set to NONE to not use Serial): ")
         if serial_bus == "":
             serial_bus == "ttyUSB0"
-        if serial_bus == lower(serial_bus):
-            if serialNone == lower(serial_bus):
-                return
+        #if serial_bus == lower(serial_bus):
+        #    if serialNone == lower(serial_bus):
+        #        return
 
        
     else:
@@ -127,27 +130,31 @@ def splash():
     print("Init Serial")
 
     #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
-    if operating_system == "Darwin":
+    if grabOS == "Darwin":
         print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
         port == dmx.select_port() # Set port to use
-    elif operating_system == "Linux":
+    elif grabOS == "Linux":
         if serial_bus == "":
-            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \ndmesg | grep tty. Set the setting to whatever it prints, e.g: ttyUSB0\u001b[0m")
+            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \nls /dev/serial/by-id/. Set the setting to whatever it prints, e.g: usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0\u001b[0m")
         else:
-            port == dmx.select_port("/dev/" + serial_bus)
-    elif operating_system == "Windows":
+            # port == dmx.select_port("/dev/" + serial_bus, auto=False)
+            print("Break!")
+            print('/dev/serial/by-id/' + serial_bus)
+            port == dmx.DMXConnection('/dev/serial/by-id/usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0')
+    elif grabOS == "Windows":
         if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
         else:
-            port == dmx.select_port(serial_bus)
+            # port == dmx.select_port(serial_bus, auto=False)
+            port == dmx.DMXConnection(serial_bus)
     elif serial_bus == "NONE": 
     #print(port.lower())
         pass
-    
     else:
         print("Unknown Error! (Serial)")
         exit()
 
+print("Init Blacklist")
 def blacklistChannels():
     import csv
     blackListInfo = input("Blacklist channels? [Y/N]: ")
@@ -170,6 +177,8 @@ def channelsToBlacklist():
     
 def disable_blacklist():
     blacklist = []
+
+print("Init Sends")
 
 def sendSerial():
     port.dmx_frame[packet] # Ben will add array soon
@@ -230,6 +239,8 @@ def sendArtNet():
         a.stop()
         del a
         
+print("Init Receiving")
+
 def reciveresolume():
     print("===================================")
     print("Namespace run")
