@@ -34,7 +34,9 @@ def recieveVISTA():
     # define a callback function
 
     # provide an IP-Address to bind to if you are using Windows and want to use multicast
-    receiver = sacn.sACNreceiver()
+    receiver = sacn.sACNreceiver(
+        bind_address= str = '0.0.0.0'
+    )
     receiver.start()  # start the receiving thread
 
     # define a callback function
