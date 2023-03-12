@@ -285,7 +285,7 @@ def sendArtNet():
         
 print("Init Receiving")
 
-def reciveresolume():
+def receiveresolume():
     print("===================================")
     print("Namespace run")
 
@@ -321,6 +321,9 @@ def main():
     recieveVISTA()
     time.sleep(1)
     print("Done receiving sACN")
+    time.sleep(1)
+    print("Let's try ArtNet, from Resolume")
+    receiveresolume()
     # splash()
     # blacklist.blacklist(blacklist)
            
