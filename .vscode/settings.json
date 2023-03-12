@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./badArtnet/stupidArtnet"
+    ],
+    "terminal.integrated.automationProfile.windows": {}
+}

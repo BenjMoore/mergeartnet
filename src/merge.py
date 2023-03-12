@@ -5,19 +5,38 @@ import time
 import os
 import platform
 from stupidArtnet import StupidArtnetServer
-from stupidArtnet.ArtnetUtils import shift_this, put_in_range
 from stupidArtnet import StupidArtnet
 import random
 import sacn
+import pyenttec as dmx
+
+print("Init sACN")
 
 global blacklist
 blacklist = []
-receiver = sacn.sACNreceiver()
-receiver.start()  # start the receiving thread
+global port
+port = ""
+global dmxData
+dmxData = []
+global version
+global grabOS # get_os does not work so manually speccing
+grabOS = platform.system()
 
+def main():
+    get_os()
+    splash()
+
+def globalvar():
+    version = 1.0
+    return version
+
+def initiatesCAN():   
+    # Define & initiate sACN (E1.31) receiver
+    receiver = sacn.sACNreceiver()
+    receiver.start()  # start the receiving thread
 
 def currentRunning():
-    up = "Offline"
+    up = "Online"
     return up
     pass
 
@@ -61,11 +80,14 @@ def splash():
     \033[1;31m[0]\033[0m \033[1;32mInfo\033[0m
     \033[1;31m[BUS]\033[0m \033[1;32mAssign Bus (Set to NONE to ignore Serial output)\033[0m
     """)
-    print("\033[1;31mStatus: "+ up + "\033[0m")
+    if up == "Online":
+        print("\u001b[32mStatus: "+ up +"\033[0m")
+    else:
+        print("\033[1;31mStatus: "+ up + "\033[0m")
+    
     # Define the menu options
-
-    mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m\033[1;32mroot\033[0m > ")
-
+    mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m""\033[1;32m\033[0m > ")
+    
     if mainSelection == '1':
         main()
         
@@ -91,8 +113,12 @@ def splash():
 
     if mainSelection == 'BUS':
         serial_bus = input("Serial Bus to use (Set to NONE to not use Serial): ")
-        lower(serial_bus)
-        splash()
+        if serial_bus == "":
+            serial_bus == "ttyUSB0"
+        #if serial_bus == lower(serial_bus):
+        #    if serialNone == lower(serial_bus):
+        #        return
+
        
     else:
         print("Invalid Input...")
@@ -101,26 +127,34 @@ def splash():
         time.sleep(1)
         splash()
 
+    print("Init Serial")
+
     #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
-    if operating_system == "Darwin":
+    if grabOS == "Darwin":
         print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
-        port = dmx.select_port() # Set port to use
-    elif operating_system == "Linux":
-        if serial_bus = "" do:
-            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \ndmesg | grep tty. Set the setting to whatever it prints, e.g: ttyUSB0\u001b[0m")
+        port == dmx.select_port() # Set port to use
+    elif grabOS == "Linux":
+        if serial_bus == "":
+            print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \nls /dev/serial/by-id/. Set the setting to whatever it prints, e.g: usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0\u001b[0m")
         else:
-            port = dmx.select_port("/dev/" + serial_bus)
-    elif operating_system == "Windows":
-        if serial_bus = "" do:
+            # port == dmx.select_port("/dev/" + serial_bus, auto=False)
+            print("Break!")
+            print('/dev/serial/by-id/' + serial_bus)
+            port == dmx.DMXConnection('/dev/serial/by-id/usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0')
+    elif grabOS == "Windows":
+        if serial_bus == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
         else:
-            port = dmx.select_port(serial_bus)
-    elif serial_bus = lower("none") #print(port.lower())
-        continue()
+            # port == dmx.select_port(serial_bus, auto=False)
+            port == dmx.DMXConnection(serial_bus)
+    elif serial_bus == "NONE": 
+    #print(port.lower())
+        pass
     else:
         print("Unknown Error! (Serial)")
         exit()
 
+print("Init Blacklist")
 def blacklistChannels():
     import csv
     blackListInfo = input("Blacklist channels? [Y/N]: ")
@@ -144,14 +178,19 @@ def channelsToBlacklist():
 def disable_blacklist():
     blacklist = []
 
-def send():
-    #THESE ARE MOST LIKELY THE VALUES YOU WILL BE NEEDING
-    target_ip = '192.168.1.92'		# typically in 2.x or 10.x range
+print("Init Sends")
+
+def sendSerial():
+    port.dmx_frame[packet] # Ben will add array soon
+    port.render()
+
+def sendArtNet():
+    target_ip = '192.168.1.58'		# typically in 2.x or 10.x range
     universe = 0										# see docs
     packet_size = 512								# it is not necessary to send whole universe
 
-    # CREATING A STUPID ARTNET OBJECT
-    # SETUP NEEDS A FEW ELEMENTS
+  
+    
     # TARGET_IP   = DEFAULT 127.0.0.1
     # UNIVERSE    = DEFAULT 0
     # PACKET_SIZE = DEFAULT 512
@@ -166,21 +205,17 @@ def send():
     # CHECK INIT
     print(a)
 
-    # YOU CAN CREATE YOUR OWN BYTE ARRAY OF PACKET_SIZE
+    global packet
     packet = bytearray(packet_size)		# create packet for Artnet
     for i in range(packet_size):			# fill packet with sequential values
         packet[i] = (i % 256)
 
-    # ... AND SET IT TO STUPID ARTNET
     a.set(packet)						# only on changes
 
-    # ALL PACKETS ARE SAVED IN THE CLASS, YOU CAN CHANGE SINGLE VALUES
     a.set_single_value(1, 255)			# set channel 1 to 255
 
-    # ... AND SEND
     a.show()							# send data
 
-    # OR USE STUPIDARTNET FUNCTIONS
     a.flash_all()						# send single packet with all channels at 255
 
     time.sleep(1)						# wait a bit, 1 sec
@@ -188,12 +223,9 @@ def send():
     a.blackout()						# send single packet with all channels at 0
     a.see_buffer()
 
-    # ALL THE ABOVE EXAMPLES SEND A SINGLE DATAPACKET
-    # STUPIDARTNET IS ALSO THREADABLE
     # TO SEND PERSISTANT SIGNAL YOU CAN START THE THREAD
-    a.start()							# start continuos sendin
+    a.start()							# start continuos sending
     #switch = input("Type 'STOP' to end session >> ")
-    # AND MODIFY THE DATA AS YOU GO
 
     while True:
         for x in range(512):
@@ -207,6 +239,8 @@ def send():
         a.stop()
         del a
         
+print("Init Receiving")
+
 def reciveresolume():
     print("===================================")
     print("Namespace run")
@@ -236,36 +270,30 @@ def reciveresolume():
     buffer = a.get_buffer(u1_listener)
     print(buffer)
     # Cleanup when you are done
-   
-#############
-#Recive VISTA through sACN
 
+def reciveVISTA():
+    #############
+    #Recive VISTA through sACN
     # provide an IP-Address to bind to if you want to send multicast packets from a specific interface
     # define a callback function
-@receiver.listen_on('universe', universe=0)  # listens on universe 1
-def callback(packet):  # packet type: sacn.DataPacket
-    pass
-a = callback(packet)
-print(packet.dmxData)  # print the received DMX data
+    @receiver.listen_on('universe', universe=0)  # listens on universe 1
+    def callback(packet):  # packet type: sacn.DataPacket
+        pass
+    a = callback(packet)
+    print(packet.dmxData)  # print the received DMX data
 
 
-    # optional: if multicast is desired, join with the universe number as parameter
-receiver.join_multicast(1)
+        # optional: if multicast is desired, join with the universe number as parameter
+    receiver.join_multicast(1)
 
-time.sleep(10)  # receive for 10 seconds
+    time.sleep(10)  # receive for 10 seconds
 
-    # optional: if multicast was previously joined
-receiver.leave_multicast(1)
+        # optional: if multicast was previously joined
+    receiver.leave_multicast(1)
 
-receiver.stop()
-        
+    receiver.stop()
+            
 
+main()
 
-#reciveresolume()
-
-
-##send()
-
-
-
-## Spencer and Ben XOXO
+## Spencer and Ben XOXO ##
