@@ -108,19 +108,21 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         pass
         
     if mainSelection == '3':
-        blacklistEnable = disable_blacklist(blacklist)
-        print("Blacklist:", blacklistEnable)
+        # blacklistEnable = disable_blacklist(blacklist)
+        print("Blacklist:") #, blacklistEnable
         time.sleep(1)
         splash()
 
     if mainSelection == '4':
         if blacklist == []:
-            print("\u001b[32mBlacklist \u001b[31mEMPTY \033[0m\u001b[32m ==\033[0m", blacklist)
-            input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            # print("\u001b[32mBlacklist \u001b[31mEMPTY \033[0m\u001b[32m ==\033[0m", blacklist)
+            # input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            print("Blacklist Disabled")
             pass
         else:
-            print("\u001b[32mBlacklist: \033[0m", blacklist)
-            input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            # print("\u001b[32mBlacklist: \033[0m", blacklist)
+            # input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            print("Blacklist Disabled")
             pass
         
     if mainSelection == '5':
@@ -143,7 +145,7 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         print("\u001b[35m|| sMAN -- INFO ||\033[0m")
         print("\u001b[32m+\033[0m"*18)
         print("\u001b[32m+\033[0m \033[1;33mVersion:    \033[0m",version)
-        print("\u001b[32m+\033[0m \033[1;33mBlacklist:  \033[0m",blacklist)
+        # print("\u001b[32m+\033[0m \033[1;33mBlacklist:  \033[0m",blacklist)
         print("\u001b[32m+\033[0m \033[1;33mStatus:     \033[0m",up)
         print("\u001b[32m+\033[0m \033[1;33mAuthor:     \033[0m",author)
         print("\u001b[32m+\033[0m"*18)
@@ -308,9 +310,9 @@ def reciveVISTA():
     receiver.stop()
            
             
-def return_blacklist(blacklist):
-    print(blacklist)
-    return blacklist
+# def return_blacklist(blacklist):
+#     print(blacklist)
+#     return blacklist
 
 
 main()
