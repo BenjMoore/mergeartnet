@@ -41,12 +41,12 @@ def recieveVISTA():
     print("Connecting...")
     @receiver.listen_on('universe', universe=1)  # listens on universe 1
     def callback(packet):  # packet type: sacn.DataPacket
-        print(packet.dmxData, "@", packet.universe, "from", packet.sourceName, "with priority:", packet.priority "at", datetime.datetime.now())  # print the received DMX
+        print(packet.dmxData, "@", packet.universe, "from", packet.sourceName, "with priority:", packet.priority, "at", datetime.datetime.now())  # print the received DMX
 
     # optional: if multicast is desired, join with the universe number as parameter
     receiver.join_multicast(1)
 
-    time.sleep(10)  # receive for 10 seconds
+    time.sleep(0.25)  # receive for 10 seconds
 
         # optional: if multicast was previously joined
     receiver.leave_multicast(1)
