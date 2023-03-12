@@ -51,7 +51,7 @@ def getbus(serial_bus):
     serial_bus = Soutput
     if serial_bus == "":
         Soutput = serial_bus
-        serial_bus == "ttyUSB0"
+        serial_bus == "usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0"
     print(serial_bus)
 
 def get_os():
@@ -66,6 +66,30 @@ def get_os():
         print('OS not defined!')
         used_os = None
     return used_os
+
+def blacklistStatus():
+        if blacklist == []:
+            # print("\u001b[32mBlacklist \u001b[31mEMPTY \033[0m\u001b[32m ==\033[0m", blacklist)
+            # input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            print("Blacklist Disabled")
+            pass
+        else:
+            # print("\u001b[32mBlacklist: \033[0m", blacklist)
+            # input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            print("Blacklist Disabled")
+            pass
+
+def info():
+        os.system(get_os())
+        print("\u001b[35m|| sMAN -- INFO ||\033[0m")
+        print("\u001b[32m+\033[0m"*18)
+        print("\u001b[32m+\033[0m \033[1;33mVersion:    \033[0m",version)
+        # print("\u001b[32m+\033[0m \033[1;33mBlacklist:  \033[0m",blacklist)
+        print("\u001b[32m+\033[0m \033[1;33mStatus:     \033[0m",up)
+        print("\u001b[32m+\033[0m \033[1;33mAuthor:     \033[0m",author)
+        print("\u001b[32m+\033[0m"*18)
+        input("\u001b[32mPress ENTER to continue...\033[0m")
+        splash()
 
 def splash():
     
@@ -122,16 +146,7 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         splash()
 
     if mainSelection == '4':
-        if blacklist == []:
-            # print("\u001b[32mBlacklist \u001b[31mEMPTY \033[0m\u001b[32m ==\033[0m", blacklist)
-            # input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
-            print("Blacklist Disabled")
-            pass
-        else:
-            # print("\u001b[32mBlacklist: \033[0m", blacklist)
-            # input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
-            print("Blacklist Disabled")
-            pass
+        blacklistStatus()
         
     if mainSelection == '5':
         pass
@@ -140,17 +155,8 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         getbus(serial_bus)
        
     if mainSelection == '0':
-        
-        os.system(get_os())
-        print("\u001b[35m|| sMAN -- INFO ||\033[0m")
-        print("\u001b[32m+\033[0m"*18)
-        print("\u001b[32m+\033[0m \033[1;33mVersion:    \033[0m",version)
-        # print("\u001b[32m+\033[0m \033[1;33mBlacklist:  \033[0m",blacklist)
-        print("\u001b[32m+\033[0m \033[1;33mStatus:     \033[0m",up)
-        print("\u001b[32m+\033[0m \033[1;33mAuthor:     \033[0m",author)
-        print("\u001b[32m+\033[0m"*18)
-        input("\u001b[32mPress ENTER to continue...\033[0m")
-        splash()
+        info()
+
 
     
 
