@@ -42,7 +42,7 @@ def recieveVISTA():
     @receiver.listen_on('universe', universe=int(1))  # listens on universe 1
     def callback(packet):  # packet type: sacn.DataPacket
     
-        vista_data = packet.dmxData[]
+        vista_data = packet.dmxData
         print(vista_data, datetime.now())  # print the received DMX
 
         # optional: if multicast is desired, join with the universe number as parameter
