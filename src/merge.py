@@ -30,6 +30,7 @@ Soutput = ''
 def main():
     get_os()
     print("L")
+    time.sleep(10)
     splash()
     # blacklist.blacklist(blacklist)
 
