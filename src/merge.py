@@ -321,6 +321,7 @@ def main():
     print("Let's try initialising sACN, then ArtNet")
     recieveVISTA()
     time.sleep(1)
+    print("Done receiving sACN")
     # splash()
     # blacklist.blacklist(blacklist)
            
