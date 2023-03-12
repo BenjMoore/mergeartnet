@@ -1,6 +1,7 @@
 ## Universe Merge Script (Contact Ben Moore [contact@theoasis.tech] for issues)
 ## TEST CASES ###
 ## TEST WITH NDI RUNNING ##
+import datetime
 import time
 import os
 import platform
@@ -46,12 +47,15 @@ def currentRunning():
     return up
     pass
 
+global serialbusHardcode
+serialbusHardcode = "usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0"
+
 def getbus(serial_bus):
-    Soutput = input("Serial Bus to use (Set to NONE to not use Serial): ")
-    serial_bus = Soutput
-    if serial_bus == "":
-        Soutput = serial_bus
-        serial_bus == "usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0"
+    # Soutput = input("Serial Bus to use (Set to NONE to not use Serial): ")
+    # serial_bus = Soutput
+    # if serial_bus == "":
+    #    Soutput = serial_bus
+    serial_bus = "usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0"
     print(serial_bus)
 
 def get_os():
@@ -169,20 +173,20 @@ def OsCompat():
         print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
         port == dmx.select_port() # Set port to use
     elif grabOS == "Linux":
-        if serial_bus == "":
+        if serialbusHardcode == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by running \nls /dev/serial/by-id/. Set the setting to whatever it prints, e.g: usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0\u001b[0m")
         else:
             # port == dmx.select_port("/dev/" + serial_bus, auto=False)
             print("Break!")
-            print('/dev/serial/by-id/' + serial_bus)
+            print('/dev/serial/by-id/' + serialbusHardcode)
             port == dmx.DMXConnection('/dev/serial/by-id/usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0')
     elif grabOS == "Windows":
-        if serial_bus == "":
+        if serialbusHardcode == "":
             print("\u001b[35;1mYou need to set your Serial bus in settings.\n | You can find it by going to Device manager, and looking for 'Ports (COM & LPT)'. Set the setting to whatever it shows in brackets, \u001b[33;1me.g: COM3\u001b[0m")
         else:
             # port == dmx.select_port(serial_bus, auto=False)
-            port == dmx.DMXConnection(serial_bus)
-    elif serial_bus == "NONE": 
+            port == dmx.DMXConnection(serialbusHardcode)
+    elif serialbusHardcode == "NONE": 
     #print(port.lower())
         pass
     else:
