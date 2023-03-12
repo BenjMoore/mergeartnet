@@ -40,10 +40,9 @@ def recieveVISTA():
     # define a callback function
     print("Connecting...")
     @receiver.listen_on('universe', universe=int(1))  # listens on universe 1
-    print("Connected (Maybe)")
     def callback(packet):  # packet type: sacn.DataPacket
     
-        vista_data = packet.dmxData[1:512]  
+        vista_data = packet.dmxData[]
         print(vista_data, datetime.now())  # print the received DMX
 
         # optional: if multicast is desired, join with the universe number as parameter
