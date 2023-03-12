@@ -4,6 +4,7 @@
 import time
 import os
 import platform
+from merge import blacklistChannels
 from stupidArtnet import StupidArtnetServer
 from stupidArtnet import StupidArtnet
 import random
@@ -97,7 +98,7 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         main()
         
     if mainSelection == '2':
-        blacklist_channel(blacklist)
+        blacklist_channel(blacklistChannels)
 
         
 
