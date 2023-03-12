@@ -4,17 +4,18 @@
 import time
 import os
 import platform
-from merge import blacklistChannels
 from stupidArtnet import StupidArtnetServer
 from stupidArtnet import StupidArtnet
 import random
 import sacn
 import pyenttec as dmx
+import blacklist
 
 print("Init sACN")
 
 
 global port
+global blacklist_DB
 port = ""
 global dmxData
 dmxData = []
@@ -24,9 +25,12 @@ grabOS = platform.system()
 version = 1.0
 author = "Ben Moore"
 Soutput = ''
+
 def main():
     get_os()
     splash()
+    blacklist.blacklist(blacklist)
+
 
 def globalvar():
     version = 1.0
@@ -56,10 +60,13 @@ def get_os():
     return used_os
 
 def splash():
-
+    
+    
+        
     serial_bus = "None"
     up = currentRunning()
     os_type = get_os()
+
     if os_type:
         os.system(os_type)
 
@@ -91,19 +98,16 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         print("\033[1;31mStatus: "+ up + "\033[0m")
     
     # Define the menu options
-    print(blacklist)
+    print(blacklist.return_list())
     mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m""\033[1;32m\033[0m > ")
     
     if mainSelection == '1':
         main()
         
     if mainSelection == '2':
-        blacklist_channel(blacklistChannels)
-
+        pass
         
-
     if mainSelection == '3':
-
         blacklistEnable = disable_blacklist(blacklist)
         print("Blacklist:", blacklistEnable)
         time.sleep(1)
@@ -113,11 +117,11 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         if blacklist == []:
             print("\u001b[32mBlacklist \u001b[31mEMPTY \033[0m\u001b[32m ==\033[0m", blacklist)
             input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
-            splash()
+            pass
         else:
             print("\u001b[32mBlacklist: \033[0m", blacklist)
             input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
-            splash()
+            pass
         
     if mainSelection == '5':
         pass
@@ -146,12 +150,7 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
         input("\u001b[32mPress ENTER to continue...\033[0m")
         splash()
 
-    else:
-        print("Invalid Input...")
-        time.sleep(1)
-        print("Restarting...")
-        time.sleep(1)
-        splash()
+    
 
     print("Init Serial")
 
@@ -307,26 +306,7 @@ def reciveVISTA():
         # receiver.leave_multicast(1)
 
     receiver.stop()
-
-def blacklist_channel(blacklist):
-            blacklist = []
-            import csv
-            blackListInfo = input("Blacklist channels? [Y/N]: ")
-            if blackListInfo == "Y" or "y":
-                import csv
-                os.chdir('src/blacklists')
-                filename = input('Enter the CSV file name: ')
-
-                with open(filename, newline='') as csvfile:
-                    csvreader = csv.reader(csvfile)
-                    blacklist = [row for row in csvreader]
-                    print("Completed:")
-                    print("Current Blacklist: ",blacklist)
-                    time.sleep(1)
-                    return blacklist
-            if blackListInfo == "N" or "n":
-                splash()
-                pass
+           
             
 def return_blacklist(blacklist):
     print(blacklist)

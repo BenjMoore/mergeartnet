@@ -36,4 +36,4 @@ for i in database.keys():
         os.system('clear')
         print("\u001b[33mWelcome To SillyMergeArtNet!! Try not to break it...\u001b[0m")
         os.system("python3 merge.py")
-       
+            
