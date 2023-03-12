@@ -29,7 +29,7 @@ Soutput = ''
 def main():
     get_os()
     splash()
-    blacklist.blacklist(blacklist)
+    # blacklist.blacklist(blacklist)
 
 
 def globalvar():
