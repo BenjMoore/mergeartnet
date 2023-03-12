@@ -38,6 +38,7 @@ def recieveVISTA():
     receiver.start()  # start the receiving thread
 
     # define a callback function
+    print("Connecting...")
     @receiver.listen_on('universe', universe=int(1))  # listens on universe 1
     def callback(packet):  # packet type: sacn.DataPacket
     
