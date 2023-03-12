@@ -29,6 +29,7 @@ Soutput = ''
 
 def main():
     get_os()
+    print("L")
     splash()
     # blacklist.blacklist(blacklist)
 
@@ -57,6 +58,7 @@ def getbus(serial_bus):
     #    Soutput = serial_bus
     serial_bus = "usb-ENTTEC_DMX_USB_PRO_EN263321-if00-port0"
     print(serial_bus)
+    splash()
 
 def get_os():
     operating_system = platform.system()
@@ -326,5 +328,6 @@ def reciveVISTA():
 
 
 main()
+
 
 ## Spencer and Ben XOXO ##
