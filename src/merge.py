@@ -12,8 +12,7 @@ import pyenttec as dmx
 
 print("Init sACN")
 
-global blacklist
-blacklist = []
+
 global port
 port = ""
 global dmxData
@@ -21,7 +20,9 @@ dmxData = []
 global version
 global grabOS # get_os does not work so manually speccing
 grabOS = platform.system()
-
+version = 1.0
+author = "Ben Moore"
+Soutput = ''
 def main():
     get_os()
     splash()
@@ -41,7 +42,6 @@ def currentRunning():
     pass
 
 def get_os():
-
     operating_system = platform.system()
     if operating_system == 'Linux':
         used_os = 'clear'
@@ -55,6 +55,8 @@ def get_os():
     return used_os
 
 def splash():
+
+    serial_bus = "None"
     up = currentRunning()
     os_type = get_os()
     if os_type:
@@ -62,15 +64,17 @@ def splash():
 
     print("""
     \033[1;35m
-      _    _       _                           __  __
-     | |  | |     (_)                         |  \/  |
-     | |  | |_ __  ___   _____ _ __ ___  ___  | \  / | ___ _ __ __ _  ___
-     | |  | | '_ \| \ \ / / _ \ '__/ __|/ _ \ | |\/| |/ _ \ '__/ _` |/ _ \\
-     | |__| | | | | |\ V /  __/ |  \__ \  __/ | |  | |  __/ | | (_| |  __/
-      \____/|_| |_|_| \_/ \___|_|  |___/\___| |_|  |_|\___|_|  \__, |\___|
-                                                                __/ |
-                                                               |___/
-        Emerge Church
+     
+          $$\      $$\  $$$$$$\  $$\   $$\ 
+          $$$\    $$$ |$$  __$$\ $$$\  $$ |
+ $$$$$$$\ $$$$\  $$$$ |$$ /  $$ |$$$$\ $$ |
+$$  _____|$$\$$\$$ $$ |$$$$$$$$ |$$ $$\$$ |
+\$$$$$$\  $$ \$$$  $$ |$$  __$$ |$$ \$$$$ |
+ \____$$\ $$ |\$  /$$ |$$ |  $$ |$$ |\$$$ |
+$$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
+\_______/ \__|     \__|\__|  \__|\__|  \__|
+                                                                           
+            Emerge Church
 
     \033[1;31m[1]\033[0m \033[1;32mStart\033[0m
     \033[1;31m[2]\033[0m \033[1;32mAdd Blacklist\033[0m
@@ -86,40 +90,61 @@ def splash():
         print("\033[1;31mStatus: "+ up + "\033[0m")
     
     # Define the menu options
+    print(blacklist)
     mainSelection = input("\033[0m\033[1;32mUniverseMerge\033[0m\033[0;37m@\033[0m""\033[1;32m\033[0m > ")
     
     if mainSelection == '1':
         main()
         
     if mainSelection == '2':
-        blacklistChannels()
+        blacklist_channel(blacklist)
+
+        
 
     if mainSelection == '3':
 
-        blacklistEnable = disable_blacklist()
+        blacklistEnable = disable_blacklist(blacklist)
         print("Blacklist:", blacklistEnable)
         time.sleep(1)
         splash()
 
     if mainSelection == '4':
-        print("Blacklist: ", data)
-        time.sleep(1)
-        splash()
+        if blacklist == []:
+            print("\u001b[32mBlacklist \u001b[31mEMPTY \033[0m\u001b[32m ==\033[0m", blacklist)
+            input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            splash()
+        else:
+            print("\u001b[32mBlacklist: \033[0m", blacklist)
+            input("\u001b[32mPress \u001b[31mENTER\033[0m \u001b[32mto continue...\033[0m")
+            splash()
         
     if mainSelection == '5':
         pass
-    if mainSelection == '0':
-        pass
 
     if mainSelection == 'BUS':
-        serial_bus = input("Serial Bus to use (Set to NONE to not use Serial): ")
-        if serial_bus == "":
-            serial_bus == "ttyUSB0"
-        #if serial_bus == lower(serial_bus):
-        #    if serialNone == lower(serial_bus):
-        #        return
-
+        getbus(serial_bus)
        
+    def getbus(serial_bus):
+        Soutput = input("Serial Bus to use (Set to NONE to not use Serial): ")
+        serial_bus = Soutput
+        if serial_bus == "":
+            Soutput = serial_bus
+            serial_bus == "ttyUSB0"
+        print(serial_bus)
+       
+    if mainSelection == '0':
+        
+        os.system(get_os())
+        print("\u001b[35m|| sMAN -- INFO ||\033[0m")
+        print("\u001b[32m+\033[0m"*18)
+        print("\u001b[32m+\033[0m \033[1;33mVersion:    \033[0m",version)
+        print("\u001b[32m+\033[0m \033[1;33mBlacklist:  \033[0m",blacklist)
+        print("\u001b[32m+\033[0m \033[1;33mStatus:     \033[0m",up)
+        print("\u001b[32m+\033[0m \033[1;33mAuthor:     \033[0m",author)
+        print("\u001b[32m+\033[0m"*18)
+        input("\u001b[32mPress ENTER to continue...\033[0m")
+        splash()
+
     else:
         print("Invalid Input...")
         time.sleep(1)
@@ -130,6 +155,8 @@ def splash():
     print("Init Serial")
 
     #This is a whole thing, it's going to be pain, the people are going to love it, revolutionary you could say
+
+def OsCompat():
     if grabOS == "Darwin":
         print("\u001bMacs get a free pass from the woes of Serial, as autodetection is supported[0m") # Rare Mac W
         port == dmx.select_port() # Set port to use
@@ -155,28 +182,10 @@ def splash():
         exit()
 
 print("Init Blacklist")
-def blacklistChannels():
-    import csv
-    blackListInfo = input("Blacklist channels? [Y/N]: ")
-    if blackListInfo == "Y" or "y":
-        channelsToBlacklist()
 
-    if blackListInfo == "N" or "n":
-        splash()
-        pass
-
-def channelsToBlacklist():
-    import csv
-    filename = input('Enter the CSV file name: ')
-
-    with open(filename, newline='') as csvfile:
-        csvreader = csv.reader(csvfile)
-        blacklist = [row for row in csvreader]
-
-    return blacklist
-    
-def disable_blacklist():
+def disable_blacklist(blacklist):
     blacklist = []
+    return blacklist
 
 print("Init Sends")
 
@@ -292,7 +301,31 @@ def reciveVISTA():
     receiver.leave_multicast(1)
 
     receiver.stop()
+
+def blacklist_channel(blacklist):
+            blacklist = []
+            import csv
+            blackListInfo = input("Blacklist channels? [Y/N]: ")
+            if blackListInfo == "Y" or "y":
+                import csv
+                os.chdir('src/blacklists')
+                filename = input('Enter the CSV file name: ')
+
+                with open(filename, newline='') as csvfile:
+                    csvreader = csv.reader(csvfile)
+                    blacklist = [row for row in csvreader]
+                    print("Completed:")
+                    print("Current Blacklist: ",blacklist)
+                    time.sleep(1)
+                    return blacklist
+            if blackListInfo == "N" or "n":
+                splash()
+                pass
             
+def return_blacklist(blacklist):
+    print(blacklist)
+    return blacklist
+
 
 main()
 

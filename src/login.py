@@ -13,7 +13,7 @@ globalvar.version()
 os.system('clear')
 print("\u001b[31mMergeartnet \u001b[32mV",Ver,"\u001b[0m\n\u001b[31mProduction Enviroment, BE CAREFULL\u001b[0m")
 global username
-database = {"Ben": "Oasis2023$", "admin": "root"}
+database = {"admin": "root"}
 username = input("\u001b[32mEnter Your Username : \u001b[0m")
 os.system('clear')
 print("\u001b[35mWelcome! <\u001b[32m",username,"\u001b[0m\u001b[35m>. Please enter your password.\n\u001b[0m")
