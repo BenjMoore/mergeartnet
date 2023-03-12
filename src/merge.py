@@ -27,12 +27,33 @@ version = 1.0
 author = "Ben Moore"
 Soutput = ''
 
-def main():
-    get_os()
-    print("L")
-    time.sleep(10)
-    splash()
-    # blacklist.blacklist(blacklist)
+def recieveVISTA():
+    #############
+    #Recive VISTA through sACN
+    # provide an IP-Address to bind to if you want to send multicast packets from a specific interface
+    # define a callback function
+
+    # provide an IP-Address to bind to if you are using Windows and want to use multicast
+    receiver = sacn.sACNreceiver()
+    receiver.start()  # start the receiving thread
+
+    # define a callback function
+    @receiver.listen_on('universe', universe=int(1))  # listens on universe 1
+    def callback(packet):  # packet type: sacn.DataPacket
+    
+        vista_data = packet.dmxData[1:512]  
+        print(vista_data, datetime.now())  # print the received DMX
+
+        # optional: if multicast is desired, join with the universe number as parameter
+        # receiver.join_multicast(1)
+
+        time.sleep(10)  # receive for 10 seconds
+
+        # optional: if multicast was previously joined
+        # receiver.leave_multicast(1)
+
+    receiver.stop()
+
 
 
 def globalvar():
@@ -295,32 +316,13 @@ def reciveresolume():
     print(buffer)
     # Cleanup when you are done
 
-def reciveVISTA():
-    #############
-    #Recive VISTA through sACN
-    # provide an IP-Address to bind to if you want to send multicast packets from a specific interface
-    # define a callback function
-
-    # provide an IP-Address to bind to if you are using Windows and want to use multicast
-    receiver = sacn.sACNreceiver()
-    receiver.start()  # start the receiving thread
-
-    # define a callback function
-    @receiver.listen_on('universe', universe=int(1))  # listens on universe 1
-    def callback(packet):  # packet type: sacn.DataPacket
-    
-        vista_data = packet.dmxData[1:512]  
-        print(vista_data, datetime.now())  # print the received DMX
-
-        # optional: if multicast is desired, join with the universe number as parameter
-        # receiver.join_multicast(1)
-
-        time.sleep(10)  # receive for 10 seconds
-
-        # optional: if multicast was previously joined
-        # receiver.leave_multicast(1)
-
-    receiver.stop()
+def main():
+    get_os()
+    print("Let's try initialising sACN, then ArtNet")
+    recieveVISTA()
+    time.sleep(1)
+    # splash()
+    # blacklist.blacklist(blacklist)
            
             
 # def return_blacklist(blacklist):
