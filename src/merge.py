@@ -308,7 +308,7 @@ def receiveresolume():
     print(a)
 
     # giving it some time for the demo
-    time.sleep(3)
+    time.sleep(10)
 
     # use the listener address to get data without a callback
     buffer = a.get_buffer(u1_listener)
