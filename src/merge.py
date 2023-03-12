@@ -46,12 +46,12 @@ def recieveVISTA():
         print(vista_data, datetime.now())  # print the received DMX
 
         # optional: if multicast is desired, join with the universe number as parameter
-        # receiver.join_multicast(1)
+        receiver.join_multicast(1)
 
         time.sleep(1000)  # receive for 1000 seconds
 
         # optional: if multicast was previously joined
-        # receiver.leave_multicast(1)
+        receiver.leave_multicast(1)
 
     receiver.stop()
 
