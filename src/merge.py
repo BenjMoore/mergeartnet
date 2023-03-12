@@ -36,7 +36,7 @@ def globalvar():
     version = 1.0
     return version
 
-def initiatesCAN():   
+def initiatesACN():   
     # Define & initiate sACN (E1.31) receiver
     receiver = sacn.sACNreceiver()
     receiver.start()  # start the receiving thread
@@ -45,6 +45,14 @@ def currentRunning():
     up = "Online"
     return up
     pass
+
+def getbus(serial_bus):
+    Soutput = input("Serial Bus to use (Set to NONE to not use Serial): ")
+    serial_bus = Soutput
+    if serial_bus == "":
+        Soutput = serial_bus
+        serial_bus == "ttyUSB0"
+    print(serial_bus)
 
 def get_os():
     operating_system = platform.system()
@@ -130,14 +138,6 @@ $$$$$$$  |$$ | \_/ $$ |$$ |  $$ |$$ | \$$ |
 
     if mainSelection == 'BUS':
         getbus(serial_bus)
-       
-    def getbus(serial_bus):
-        Soutput = input("Serial Bus to use (Set to NONE to not use Serial): ")
-        serial_bus = Soutput
-        if serial_bus == "":
-            Soutput = serial_bus
-            serial_bus == "ttyUSB0"
-        print(serial_bus)
        
     if mainSelection == '0':
         
