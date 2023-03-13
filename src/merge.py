@@ -5,17 +5,20 @@ import datetime
 import time
 import os
 import platform
-from stupidArtnet import StupidArtnetServer
-from stupidArtnet import StupidArtnet
+#import StupidArtnetServer
+#from stupidArtnet import StupidArtnetServer
+#from stupidArtnet import StupidArtnet
 import random
 import sacn
 import pyenttec as dmx
 import blacklist
+from stupidArtnet import StupidArtnetServer
+#from stupidArtnet.stupidArtnet import StupidArtnetServer
 
 print("Init sACN")
 
 
-global port
+global port#
 global blacklist_DB
 port = ""
 global dmxData
@@ -42,7 +45,7 @@ def recieveVISTA():
     @receiver.listen_on('universe', universe=1)  # listens on universe 1
     def callback(packet):  # packet type: sacn.DataPacket
         print(packet.dmxData, "@ universe", packet.universe, "from", packet.sourceName, "with priority:", packet.priority, "at", datetime.datetime.now())  # print the received DMX
-
+        os.system("clear")
     # optional: if multicast is desired, join with the universe number as parameter
     receiver.join_multicast(1)
 
@@ -292,7 +295,7 @@ def receiveresolume():
     # Art-Net 4 definition specifies nets and subnets
     # Please see README and Art-Net user guide for details
     # Here we use the simplified default
-    UNIVERSE_TO_LISTEN = 0
+    UNIVERSE_TO_LISTEN = 15
 
     # Initilize server, this starts a server in the Art-Net port
     a = StupidArtnetServer()
