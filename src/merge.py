@@ -344,6 +344,7 @@ def receiveresolume():
 
 def main():
     get_os()
+    recieveRES()
     print("Let's try initialising sACN, then ArtNet")
     recieveVISTA()
     time.sleep(1)
