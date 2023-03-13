@@ -6,8 +6,8 @@ import time
 import os
 import platform
 #import StupidArtnetServer
-#from stupidArtnet import StupidArtnetServer
-#from stupidArtnet import StupidArtnet
+#from stupidArtnetFAIL import StupidArtnetServer
+#from stupidArtnetFAIL import StupidArtnet
 import random
 import sacn
 import pyenttec as dmx
@@ -310,8 +310,6 @@ def receiveresolume():
     print("Object State:")
     print(a)
 
-    # giving it some time for the demo
-    time.sleep(10)
 
     # use the listener address to get data without a callback
     buffer = a.get_buffer(u1_listener)
