@@ -309,7 +309,7 @@ def receiveresolume():
 
     # a StupidArtnetServer can listen to a specific universe
     # and return new data to a user defined callback
-    a = StupidArtnetServer(universe=0)
+    a = StupidArtnetServer(universe=0, callback_function=test_callback)
 
     # if you prefer, you can also inspect the latest
     # received data yourself
