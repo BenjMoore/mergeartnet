@@ -6,8 +6,8 @@ import time
 import os
 import platform
 #import StupidArtnetServer
-#from stupidArtnetFAIL import StupidArtnetServer
-#from stupidArtnetFAIL import StupidArtnet
+from stupidArtnetFAIL import StupidArtnetServer
+from stupidArtnetFAIL import StupidArtnet
 import random
 import sacn
 import pyenttec as dmx
