@@ -5,8 +5,8 @@ import datetime
 import time
 import os
 import platform
-from stupidArtnet import StupidArtnetServer
-from stupidArtnet import StupidArtnet
+from stupidArtnetFAIL import StupidArtnetServer
+from stupidArtnetFAIL import StupidArtnet
 import random
 import sacn
 import pyenttec as dmx
@@ -309,7 +309,7 @@ def receiveresolume():
 
     # a StupidArtnetServer can listen to a specific universe
     # and return new data to a user defined callback
-    a = StupidArtnetServer(universe=0, callback_function=test_callback)
+    a = StupidArtnetServer(universe=0, callback_function='test_callback')
 
     # if you prefer, you can also inspect the latest
     # received data yourself
