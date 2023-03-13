@@ -292,35 +292,25 @@ def receiveresolume():
     # Art-Net 4 definition specifies nets and subnets
     # Please see README and Art-Net user guide for details
     # Here we use the simplified default
-    # UNIVERSE_TO_LISTEN = 0
+    UNIVERSE_TO_LISTEN = 0
 
     # Initilize server, this starts a server in the Art-Net port
-    # a = StupidArtnetServer()
+    a = StupidArtnetServer()
 
     # For every universe we would like to receive,
     # add a new listener with a optional callback
     # the return is an id for the listener
-    # u1_listener = a.register_listener(
-    #     UNIVERSE_TO_LISTEN, callback_function='')
+    u1_listener = a.register_listener(
+        UNIVERSE_TO_LISTEN, callback_function='')
 
     # print object state
-    # print("Object State:")
-    # print(a)
+    print("Object State:")
+    print(a)
 
-    # a StupidArtnetServer can listen to a specific universe
-    # and return new data to a user defined callback
-    a = StupidArtnetServer(universe=0, callback_function='test_callback')
-
-    # if you prefer, you can also inspect the latest
-    # received data yourself
-    buffer = a.get_buffer()
-
-    # giving it some time for the demo
-    time.sleep(10)
 
     # use the listener address to get data without a callback
-    # buffer = a.get_buffer(u1_listener)
-    # print(buffer)
+    buffer = a.get_buffer(u1_listener)
+    print(buffer)
     # Cleanup when you are done
 
 def main():
