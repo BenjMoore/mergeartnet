@@ -345,13 +345,16 @@ def receiveresolume():
 def main():
     get_os()
     recieveRES()
-    print("Let's try initialising sACN, then ArtNet")
+    input("")
     recieveVISTA()
+    input("")
+
+    print("Let's try initialising sACN, then ArtNet")
     time.sleep(1)
     print("Done receiving sACN")
     time.sleep(1)
     print("Let's try ArtNet, from Resolume")
-    recieveRES()
+   
     # splash()
     # blacklist.blacklist(blacklist)
            
