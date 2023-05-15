@@ -209,7 +209,8 @@ def sendArtNet():
     packet = bytearray(packet_size)		# create packet for Artnet
     for i in range(packet_size):			# fill packet with sequential values
         packet[i] = (i % 256)
-
+     
+     
     a.set(packet)						# only on changes
 
     a.set_single_value(1, 255)			# set channel 1 to 255
