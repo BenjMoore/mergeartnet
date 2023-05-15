@@ -36,7 +36,7 @@ class StupidArtnetServer():
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket_server.setsockopt(
             socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket_server.bind(('192.168.1.92', self.UDP_PORT))  # Listen on any valid IP
+        self.socket_server.bind(('192.168.1.105', self.UDP_PORT))  # Listen on any valid IP
 
         while self.listen:
 
